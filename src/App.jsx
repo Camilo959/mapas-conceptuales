@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const maps = [
   {
@@ -126,23 +126,34 @@ const maps = [
 
 function ConceptMap({ map }) {
   const [hovered, setHovered] = useState(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   return (
     <div
       style={{
         fontFamily: "'Georgia', serif",
         background: "#FAFAF9",
-        borderRadius: 16,
-        padding: "2rem",
-        marginBottom: "2.5rem",
+        borderRadius: isMobile ? 12 : 16,
+        padding: isMobile ? "1.25rem" : "2rem",
+        marginBottom: "2rem",
         border: `2px solid ${map.mid}`,
         boxShadow: `0 4px 24px ${map.accent}22`,
       }}
     >
-      <div style={{ marginBottom: "1.5rem" }}>
+      <div style={{ marginBottom: isMobile ? "1rem" : "1.5rem" }}>
         <div
           style={{
-            fontSize: "0.75rem",
+            fontSize: isMobile ? "0.65rem" : "0.75rem",
             fontFamily: "monospace",
             letterSpacing: "0.15em",
             color: map.accent,
@@ -154,11 +165,11 @@ function ConceptMap({ map }) {
         </div>
         <div
           style={{
-            fontSize: "1.05rem",
+            fontSize: isMobile ? "0.9rem" : "1.05rem",
             color: "#1C1917",
             fontStyle: "italic",
             borderLeft: `4px solid ${map.accent}`,
-            paddingLeft: "0.75rem",
+            paddingLeft: isMobile ? "0.5rem" : "0.75rem",
           }}
         >
           {map.subtitle}
@@ -166,17 +177,18 @@ function ConceptMap({ map }) {
       </div>
 
       {/* Root node */}
-      <div style={{ display: "flex", justifyContent: "center", marginBottom: "1.5rem" }}>
+      <div style={{ display: "flex", justifyContent: "center", marginBottom: isMobile ? "1rem" : "1.5rem" }}>
         <div
           style={{
             background: map.accent,
             color: "#fff",
             borderRadius: 50,
-            padding: "0.6rem 1.8rem",
-            fontSize: "1rem",
+            padding: isMobile ? "0.5rem 1.25rem" : "0.6rem 1.8rem",
+            fontSize: isMobile ? "0.9rem" : "1rem",
             fontWeight: "bold",
             letterSpacing: "0.04em",
             boxShadow: `0 4px 16px ${map.accent}55`,
+            textAlign: "center",
           }}
         >
           {map.nodes.root}
@@ -185,15 +197,15 @@ function ConceptMap({ map }) {
 
       {/* Central connector */}
       <div style={{ display: "flex", justifyContent: "center", marginBottom: "0.5rem" }}>
-        <div style={{ width: 2, height: 24, background: map.mid }} />
+        <div style={{ width: 2, height: isMobile ? 16 : 24, background: map.mid }} />
       </div>
 
       {/* Branches grid */}
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: "1.25rem",
+          gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
+          gap: isMobile ? "1rem" : "1.25rem",
         }}
       >
         {map.nodes.branches.map((branch, bi) => (
@@ -202,8 +214,8 @@ function ConceptMap({ map }) {
             style={{
               background: "#fff",
               border: `1.5px solid ${map.mid}`,
-              borderRadius: 12,
-              padding: "1rem",
+              borderRadius: isMobile ? 10 : 12,
+              padding: isMobile ? "0.75rem" : "1rem",
               position: "relative",
               transition: "box-shadow 0.2s",
               boxShadow:
@@ -217,7 +229,7 @@ function ConceptMap({ map }) {
             {/* Link label */}
             <div
               style={{
-                fontSize: "0.68rem",
+                fontSize: isMobile ? "0.62rem" : "0.68rem",
                 color: map.accent,
                 fontFamily: "monospace",
                 textTransform: "uppercase",
@@ -233,12 +245,12 @@ function ConceptMap({ map }) {
               style={{
                 background: map.light,
                 border: `2px solid ${map.accent}`,
-                borderRadius: 8,
-                padding: "0.4rem 0.75rem",
+                borderRadius: isMobile ? 6 : 8,
+                padding: isMobile ? "0.35rem 0.6rem" : "0.4rem 0.75rem",
                 fontWeight: "bold",
-                fontSize: "0.88rem",
+                fontSize: isMobile ? "0.82rem" : "0.88rem",
                 color: map.accent,
-                marginBottom: "0.75rem",
+                marginBottom: isMobile ? "0.6rem" : "0.75rem",
                 textAlign: "center",
               }}
             >
@@ -246,24 +258,24 @@ function ConceptMap({ map }) {
             </div>
 
             {/* Children */}
-            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: isMobile ? 5 : 6 }}>
               {branch.children.map((child, ci) => (
                 <div key={ci}>
                   <div
                     style={{
                       display: "flex",
                       alignItems: "flex-start",
-                      gap: 6,
+                      gap: isMobile ? 4 : 6,
                     }}
                   >
                     <span
                       style={{
                         color: map.accent,
-                        fontSize: "0.65rem",
+                        fontSize: isMobile ? "0.6rem" : "0.65rem",
                         fontFamily: "monospace",
                         whiteSpace: "nowrap",
                         paddingTop: 3,
-                        minWidth: 60,
+                        minWidth: isMobile ? 50 : 60,
                       }}
                     >
                       {child.link} →
@@ -273,9 +285,9 @@ function ConceptMap({ map }) {
                         style={{
                           background: "#F5F5F4",
                           border: `1px solid ${map.mid}`,
-                          borderRadius: 6,
-                          padding: "0.25rem 0.5rem",
-                          fontSize: "0.8rem",
+                          borderRadius: isMobile ? 5 : 6,
+                          padding: isMobile ? "0.22rem 0.45rem" : "0.25rem 0.5rem",
+                          fontSize: isMobile ? "0.75rem" : "0.8rem",
                           color: "#292524",
                         }}
                       >
@@ -284,7 +296,7 @@ function ConceptMap({ map }) {
                       {child.sub && (
                         <div
                           style={{
-                            fontSize: "0.68rem",
+                            fontSize: isMobile ? "0.64rem" : "0.68rem",
                             color: "#78716C",
                             fontStyle: "italic",
                             marginTop: 2,
@@ -306,10 +318,10 @@ function ConceptMap({ map }) {
       {/* Legend */}
       <div
         style={{
-          marginTop: "1rem",
+          marginTop: isMobile ? "0.75rem" : "1rem",
           display: "flex",
-          gap: "1.5rem",
-          fontSize: "0.7rem",
+          gap: isMobile ? "0.75rem" : "1.5rem",
+          fontSize: isMobile ? "0.65rem" : "0.7rem",
           color: "#A8A29E",
           fontFamily: "monospace",
           justifyContent: "center",
@@ -363,21 +375,33 @@ function ConceptMap({ map }) {
 }
 
 export default function App() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   return (
     <div
       style={{
         maxWidth: 860,
         margin: "0 auto",
-        padding: "2rem 1.5rem",
+        padding: isMobile ? "1.5rem 1rem" : "2rem 1.5rem",
         background: "#F7F6F3",
         minHeight: "100vh",
       }}
     >
-      <div style={{ textAlign: "center", marginBottom: "2.5rem" }}>
+      <div style={{ textAlign: "center", marginBottom: isMobile ? "1.5rem" : "2.5rem" }}>
         <h1
           style={{
             fontFamily: "Georgia, serif",
-            fontSize: "1.4rem",
+            fontSize: isMobile ? "1.2rem" : "1.4rem",
             color: "#1C1917",
             letterSpacing: "0.02em",
             marginBottom: 6,
@@ -385,7 +409,7 @@ export default function App() {
         >
           Mapas Conceptuales
         </h1>
-        <p style={{ color: "#78716C", fontSize: "0.85rem", fontStyle: "italic" }}>
+        <p style={{ color: "#78716C", fontSize: isMobile ? "0.8rem" : "0.85rem", fontStyle: "italic" }}>
           Pasa el cursor sobre cada cuadrante para resaltarlo
         </p>
       </div>
